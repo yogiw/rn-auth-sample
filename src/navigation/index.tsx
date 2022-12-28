@@ -14,7 +14,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Navigation = () => {
   const scheme = useColorScheme();
-  const {isAuthenticated} = useAuthStore();
+  const {_hasHydrated, isAuthenticated} = useAuthStore();
   const {activeScheme, setColorScheme} = useColorSchemeStore();
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const Navigation = () => {
     }
   }, [scheme, setColorScheme]);
 
-  if (isAuthenticated === null) {
+  if (!_hasHydrated) {
     return <View />;
   }
 
