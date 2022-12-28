@@ -1,10 +1,35 @@
 import React from 'react';
 import {HomeScreen} from '../index';
-import {render, screen} from '@testing-library/react-native';
+import {fireEvent, render, screen} from '@testing-library/react-native';
+import useAuthStore from '../../../stores/useAuthStore';
 
-it('Should render correctly', () => {
-  render(<HomeScreen />);
+const mockNavigate = jest.fn();
+const mockCanGoBack = jest.fn();
+const mockGoBack = jest.fn();
 
-  const text = screen.getByTestId('hello-world');
-  expect(text).toHaveTextContent('Hello From Home Screen');
+jest.mock('@react-navigation/native', () => {
+  const actualNav = jest.requireActual('@react-navigation/native');
+  return {
+    ...actualNav,
+    useNavigation: () => ({
+      navigate: mockNavigate,
+      canGoBack: mockCanGoBack,
+      goBack: mockGoBack,
+    }),
+  };
+});
+
+describe('Home Screen', () => {
+  it('should render correctly', () => {
+    render(<HomeScreen />);
+    const mockLogout = jest.fn();
+    useAuthStore.setState({
+      username: 'melonmusk@gmail.com',
+      password: '12345abcdeABCDE',
+      logout: mockLogout,
+    });
+
+    fireEvent.press(screen.getByTestId('button-logout'));
+    expect(mockLogout).toHaveBeenCalled();
+  });
 });
