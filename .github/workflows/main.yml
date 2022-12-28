@@ -16,7 +16,12 @@ jobs:
         run: npm install --force
 
       - name: Test
-        run: npm test
+        run: npm run test:coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build android release
         run: cd android && ./gradlew assembleRelease
